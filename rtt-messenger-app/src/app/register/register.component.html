@@ -1,0 +1,291 @@
+<main>
+  <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <fieldset>
+      <legend>Create an account</legend>
+
+      <div class="field">
+        <label for="firstName">First name</label>
+        <input
+          id="firstName"
+          name="firstname"
+          formControlName="firstname"
+          type="text"
+          placeholder="Enter your first name"
+          autocomplete="given-name"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="lastName">Last name</label>
+        <input
+          id="lastName"
+          name="lastname"
+          formControlName="lastname"
+          type="text"
+          placeholder="Enter your last name"
+          autocomplete="family-name"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          name="username"
+          formControlName="username"
+          type="text"
+          placeholder="Choose a username"
+          autocomplete="username"
+          minlength="3"
+          maxlength="20"
+          pattern="[A-Za-z_-]+"
+          title="Use at least 3 and at most 20 letters, hyphens, or underscores only."
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          formControlName="email"
+          type="email"
+          placeholder="name@example.com"
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="field">
+        <label for="phoneNumber">Phone number</label>
+        <input
+          id="phoneNumber"
+          name="phone_number"
+          formControlName="phone_number"
+          type="tel"
+          placeholder="Enter your phone number"
+          autocomplete="tel"
+        />
+      </div>
+
+      <div class="field">
+        <label for="country">Country</label>
+        <div class="country-picker">
+          <input
+            id="country"
+            type="text"
+            autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+            aria-controls="country-list"
+            placeholder="Search or select a country"
+            [value]="countryQuery || selectedCountry"
+            [attr.aria-expanded]="activeDropdown === 'country'"
+            [attr.aria-activedescendant]="
+              activeDropdown === 'country' && filteredCountries.length
+                ? 'country-option-' + activeCountryIndex
+                : null
+            "
+            (focus)="openCountryList()"
+            (input)="searchCountries($event)"
+            (keydown)="handleCountryKeydown($event)"
+          />
+          <input type="hidden" name="country" formControlName="country" />
+          @if (activeDropdown === "country") {
+            <ul id="country-list" class="country-options" role="listbox">
+              @for (
+                country of filteredCountries;
+                track country;
+                let index = $index
+              ) {
+                <li
+                  [id]="'country-option-' + index"
+                  role="option"
+                  [attr.aria-selected]="selectedCountry === country"
+                  [class.active]="index === activeCountryIndex"
+                  (mousedown)="$event.preventDefault()"
+                  (click)="selectCountry(country)"
+                >
+                  {{ country }}
+                </li>
+              } @empty {
+                <li class="no-results" role="presentation">
+                  No countries found
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          formControlName="password"
+          type="password"
+          placeholder="At least 8 characters"
+          autocomplete="new-password"
+          minlength="8"
+          pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,}"
+          title="Use at least 8 characters, including a letter and a number."
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label id="dateOfBirthLabel">Date of birth</label>
+        <div
+          class="birth-date"
+          role="group"
+          aria-labelledby="dateOfBirthLabel"
+          [attr.aria-describedby]="birthDateError ? 'dateOfBirthError' : null"
+        >
+          <span class="date-select">
+            <button
+              type="button"
+              class="date-trigger"
+              role="combobox"
+              aria-label="Birth month"
+              aria-haspopup="listbox"
+              aria-controls="birth-month-list"
+              [attr.aria-expanded]="activeDropdown === 'month'"
+              [attr.aria-activedescendant]="
+                activeDropdown === 'month'
+                  ? 'birth-month-option-' + activeBirthOptionIndex
+                  : null
+              "
+              [attr.aria-invalid]="birthDateError && !birthMonth"
+              (click)="toggleBirthDropdown('month')"
+              (keydown)="handleBirthDropdownKeydown($event, 'month')"
+            >
+              {{ birthMonth ? birthMonths[birthMonth - 1] : "Month" }}
+            </button>
+            @if (activeDropdown === "month") {
+              <ul id="birth-month-list" class="country-options" role="listbox">
+                @for (month of birthMonths; track month; let index = $index) {
+                  <li
+                    [id]="'birth-month-option-' + index"
+                    role="option"
+                    [attr.aria-selected]="birthMonth === index + 1"
+                    [class.active]="activeBirthOptionIndex === index"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="selectBirthOption('month', index)"
+                  >
+                    {{ month }}
+                  </li>
+                }
+              </ul>
+            }
+          </span>
+          <span class="date-select">
+            <button
+              type="button"
+              class="date-trigger"
+              role="combobox"
+              aria-label="Birth day"
+              aria-haspopup="listbox"
+              aria-controls="birth-day-list"
+              [attr.aria-expanded]="activeDropdown === 'day'"
+              [attr.aria-activedescendant]="
+                activeDropdown === 'day'
+                  ? 'birth-day-option-' + activeBirthOptionIndex
+                  : null
+              "
+              [attr.aria-invalid]="birthDateError && !birthDay"
+              (click)="toggleBirthDropdown('day')"
+              (keydown)="handleBirthDropdownKeydown($event, 'day')"
+            >
+              {{ birthDay ?? "Day" }}
+            </button>
+            @if (activeDropdown === "day") {
+              <ul id="birth-day-list" class="country-options" role="listbox">
+                @for (
+                  day of availableBirthDays;
+                  track day;
+                  let index = $index
+                ) {
+                  <li
+                    [id]="'birth-day-option-' + index"
+                    role="option"
+                    [attr.aria-selected]="birthDay === day"
+                    [class.active]="activeBirthOptionIndex === index"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="selectBirthOption('day', index)"
+                  >
+                    {{ day }}
+                  </li>
+                }
+              </ul>
+            }
+          </span>
+          <span class="date-select">
+            <button
+              type="button"
+              class="date-trigger"
+              role="combobox"
+              aria-label="Birth year"
+              aria-haspopup="listbox"
+              aria-controls="birth-year-list"
+              [attr.aria-expanded]="activeDropdown === 'year'"
+              [attr.aria-activedescendant]="
+                activeDropdown === 'year'
+                  ? 'birth-year-option-' + activeBirthOptionIndex
+                  : null
+              "
+              [attr.aria-invalid]="birthDateError && !birthYear"
+              (click)="toggleBirthDropdown('year')"
+              (keydown)="handleBirthDropdownKeydown($event, 'year')"
+            >
+              {{ birthYear ?? "Year" }}
+            </button>
+            @if (activeDropdown === "year") {
+              <ul id="birth-year-list" class="country-options" role="listbox">
+                @for (year of birthYears; track year; let index = $index) {
+                  <li
+                    [id]="'birth-year-option-' + index"
+                    role="option"
+                    [attr.aria-selected]="birthYear === year"
+                    [class.active]="activeBirthOptionIndex === index"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="selectBirthOption('year', index)"
+                  >
+                    {{ year }}
+                  </li>
+                }
+              </ul>
+            }
+          </span>
+          <input
+            type="hidden"
+            id="dateOfBirth"
+            name="date_of_birth"
+            formControlName="date_of_birth"
+          />
+        </div>
+        @if (birthDateError) {
+          <p id="dateOfBirthError" class="date-error" role="alert">
+            Select your month, day, and year of birth.
+          </p>
+        }
+      </div>
+
+      <label class="remember-option" for="remember">
+        <input id="remember" name="remember" type="checkbox" />
+        Remember me
+      </label>
+
+      <button type="submit">Register</button>
+      <button class="login-button" type="button" routerLink="/login">
+        Already have an account? Log in
+      </button>
+    </fieldset>
+  </form>
+  @if (message) {
+    <p class="message" role="alert">{{ message }}</p>
+  }
+</main>

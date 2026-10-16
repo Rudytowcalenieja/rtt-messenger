@@ -1,0 +1,51 @@
+$lime: #a4de02;
+$lime-dark: #6fa800;
+$text: #1e2a05;
+$white: #ffffff;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, $lime, $lime-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  &__title {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $text;
+    letter-spacing: 0.5px;
+  }
+
+  &__nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__link {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: $text;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s;
+
+    &:hover {
+      background: $white;
+      color: $lime-dark;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <fieldset>
+    <legend>Login</legend>
+    <label for="usernameOrEmail">Username or email:</label>
+    <input
+      type="text"
+      id="usernameOrEmail"
+      name="usernameOrEmail"
+      formControlName="usernameOrEmail"
+      placeholder="Enter your username or email"
+      autocomplete="username"
+      required
+    />
+    <label for="password">Password:</label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      formControlName="password"
+      placeholder="Enter your password"
+      autocomplete="current-password"
+      required
+    />
+    <label class="remember-option" for="remember">
+      <input type="checkbox" id="remember" name="remember" />
+      Remember me
+    </label>
+    @if (errorMessage) {
+      <p class="error-message" role="alert">{{ errorMessage }}</p>
+    }
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Logging in...' : 'Login' }}
+    </button>
+    <button class="register-button" type="button" routerLink="/register">
+      Don't have an account? Register
+    </button>
+  </fieldset>
+</form>
