@@ -2,8 +2,8 @@ $register-accent: #84cc16;
 $register-border: #c7d2d0;
 
 main {
-  width: min(100% - 2rem, 42rem);
-  margin: 2rem auto;
+  width: min(100% - 3rem, 58rem);
+  margin: 3rem auto;
 }
 
 form {
@@ -12,11 +12,10 @@ form {
 
 fieldset {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem 1rem;
+  gap: 1.25rem;
   min-width: 0;
   margin: 0;
-  padding: 1.25rem;
+  padding: 1.75rem 2rem;
   border: 1px solid $register-border;
   border-radius: 0.75rem;
   background: #fff;
@@ -26,31 +25,87 @@ fieldset {
 legend {
   padding: 0 0.5rem;
   color: $register-accent;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
+}
+
+.step-indicator {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+
+  span {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid $register-border;
+    border-radius: 50%;
+  }
+
+  .active {
+    color: inherit;
+    font-weight: 700;
+
+    span {
+      border-color: $register-accent;
+      background: $register-accent;
+      color: #fff;
+    }
+  }
+}
+
+.form-section {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+}
+
+.section-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
 }
 
 .field {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
-.field:has(.country-picker [aria-expanded="true"]),
-.field:has(.date-select [aria-expanded="true"]) {
+.field:has(.country-picker [aria-expanded="true"]) {
   position: relative;
   z-index: 6;
 }
 
 label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
 .field input,
-.date-trigger {
+.field select {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  padding: 0.55rem 0.7rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 0.9rem;
   border: 1px solid $register-border;
   border-radius: 0.4rem;
   color: inherit;
@@ -72,27 +127,34 @@ label {
   gap: 0.5rem;
   min-width: 0;
 
-  .date-select {
-    position: relative;
-    min-width: 0;
+  &__select {
+    height: 3.25rem;
+    padding: 0 2rem 0 0.9rem;
+    appearance: none;
+    background-color: #fff;
+    background-image:
+      linear-gradient(45deg, transparent 50%, #64748b 50%),
+      linear-gradient(135deg, #64748b 50%, transparent 50%);
+    background-position:
+      calc(100% - 0.9rem) 50%,
+      calc(100% - 0.65rem) 50%;
+    background-repeat: no-repeat;
+    background-size: 0.28rem 0.28rem;
+    cursor: pointer;
+
+    &:invalid {
+      color: #64748b;
+    }
+
+    &:focus-visible {
+      border-color: $register-accent;
+      outline: none;
+      box-shadow: 0 0 0 3px rgb(132 204 22 / 18%);
+    }
   }
 }
 
-.date-trigger {
-  padding-right: 2.25rem;
-  border: 1px solid $register-border;
-  background: #fff;
-  color: #64748b;
-  font-weight: 400;
-  text-align: left;
-
-  &:hover {
-    background: #fff;
-  }
-}
-
-.country-picker,
-.date-select {
+.country-picker {
   position: relative;
   z-index: 2;
 
@@ -117,11 +179,7 @@ label {
   }
 }
 
-.date-select:has([aria-expanded="true"])::after {
-  transform: translateY(-25%) rotate(225deg);
-}
-
-.date-trigger[aria-invalid="true"] {
+.birth-date__select[aria-invalid="true"] {
   border-color: #dc2626;
 }
 
@@ -172,14 +230,15 @@ label {
 
 .date-error {
   color: #b91c1c;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
+.consent-option,
 .remember-option {
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  font-size: 1rem;
   font-weight: 400;
 
   input {
@@ -187,9 +246,19 @@ label {
   }
 }
 
+.form-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.form-actions--navigation {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 button {
   width: 100%;
-  padding: 0.75rem 1rem;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.25rem;
   border: 0;
   border-radius: 0.4rem;
   background: $register-accent;
@@ -226,8 +295,32 @@ button {
 }
 
 @media (max-width: 40rem) {
-  fieldset {
+  main {
+    width: min(100% - 1.5rem, 58rem);
+    margin: 1.5rem auto;
+  }
+
+  .section-fields {
     grid-template-columns: minmax(0, 1fr);
-    padding: 1rem;
+  }
+
+  fieldset {
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+
+  .form-section {
+    gap: 0.9rem;
+  }
+
+  .step-indicator {
+    gap: 0.5rem;
+
+    li {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+    }
   }
 }

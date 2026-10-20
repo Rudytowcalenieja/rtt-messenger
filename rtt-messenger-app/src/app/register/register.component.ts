@@ -1,8 +1,15 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { countryNames } from './countries';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { UserService } from '../users/user.service';
+import { SessionService } from '../users/session.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -36,9 +43,17 @@ export class RegisterComponent {
   birthMonth: number | null = null;
   birthDay: number | null = null;
   birthYear: number | null = null;
-  activeDropdown: 'country' | 'month' | 'day' | 'year' | null = null;
-  activeBirthOptionIndex = 0;
+  activeDropdown: 'country' | null = null;
   birthDateError = false;
+  currentStep = 1;
+  acceptRules = new FormControl(false, {
+    nonNullable: true,
+    validators: Validators.requiredTrue,
+  });
+
+  get acceptRulesError(): boolean {
+    return this.acceptRules.touched && this.acceptRules.invalid;
+  }
 
   get availableBirthDays(): number[] {
     const daysInMonth = this.birthMonth
@@ -121,67 +136,27 @@ export class RegisterComponent {
     this.form.controls.country.setValue(country);
   }
 
-  toggleBirthDropdown(field: 'month' | 'day' | 'year'): void {
-    if (this.activeDropdown === field) {
-      this.activeDropdown = null;
-      return;
-    }
-
-    if (this.activeDropdown === 'country') {
-      this.countryQuery = '';
-    }
-    this.activeDropdown = field;
-    this.activeBirthOptionIndex = this.selectedBirthOptionIndex(field);
+  setBirthMonth(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.birthMonth = value ? Number(value) : null;
+    this.normalizeBirthDay();
+    this.updateBirthDate();
   }
 
-  handleBirthDropdownKeydown(
-    event: KeyboardEvent,
-    field: 'month' | 'day' | 'year',
-  ): void {
-    const optionCount = this.birthOptionCount(field);
-
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      const direction = event.key === 'ArrowDown' ? 1 : -1;
-
-      if (this.activeDropdown !== field) {
-        if (this.activeDropdown === 'country') {
-          this.countryQuery = '';
-        }
-        this.activeDropdown = field;
-        this.activeBirthOptionIndex =
-          direction > 0
-            ? this.selectedBirthOptionIndex(field)
-            : optionCount - 1;
-      } else if (optionCount > 0) {
-        this.activeBirthOptionIndex = Math.max(
-          0,
-          Math.min(this.activeBirthOptionIndex + direction, optionCount - 1),
-        );
-      }
-    } else if (
-      (event.key === 'Enter' || event.key === ' ') &&
-      this.activeDropdown === field
-    ) {
-      event.preventDefault();
-      this.selectBirthOption(field, this.activeBirthOptionIndex);
-    } else if (event.key === 'Escape') {
-      this.activeDropdown = null;
-    }
+  setBirthDay(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.birthDay = value ? Number(value) : null;
+    this.updateBirthDate();
   }
 
-  selectBirthOption(field: 'month' | 'day' | 'year', index: number): void {
-    if (field === 'month') {
-      this.birthMonth = index + 1;
-      this.normalizeBirthDay();
-    } else if (field === 'day') {
-      this.birthDay = this.availableBirthDays[index];
-    } else {
-      this.birthYear = this.birthYears[index];
-      this.normalizeBirthDay();
-    }
+  setBirthYear(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.birthYear = value ? Number(value) : null;
+    this.normalizeBirthDay();
+    this.updateBirthDate();
+  }
 
-    this.activeDropdown = null;
+  private updateBirthDate(): void {
     this.form.controls.date_of_birth.setValue(this.dateOfBirth);
     this.birthDateError = !this.dateOfBirth;
   }
@@ -192,7 +167,7 @@ export class RegisterComponent {
     const target = event.target;
     if (
       target instanceof Element &&
-      !target.closest('.country-picker, .date-select')
+      !target.closest('.country-picker')
     ) {
       if (this.activeDropdown === 'country') {
         this.countryQuery = '';
@@ -210,30 +185,63 @@ export class RegisterComponent {
     }
   }
 
-  private birthOptionCount(field: 'month' | 'day' | 'year'): number {
-    if (field === 'month') return this.birthMonths.length;
-    if (field === 'day') return this.availableBirthDays.length;
-    return this.birthYears.length;
+  goToNextStep(): void {
+    const controlsToValidate =
+      this.currentStep === 1
+        ? [
+            this.form.controls.firstname,
+            this.form.controls.lastname,
+            this.form.controls.username,
+            this.form.controls.password,
+          ]
+        : [
+            this.form.controls.email,
+            this.form.controls.phone_number,
+            this.form.controls.country,
+            this.form.controls.date_of_birth,
+          ];
+
+    if (this.currentStep === 2) {
+      this.form.controls.date_of_birth.setValue(this.dateOfBirth);
+      this.birthDateError = !this.dateOfBirth;
+    }
+
+    controlsToValidate.forEach((control) => control.markAsTouched());
+    if (controlsToValidate.some((control) => control.invalid)) return;
+
+    this.currentStep = Math.min(this.currentStep + 1, 3);
   }
 
-  private selectedBirthOptionIndex(field: 'month' | 'day' | 'year'): number {
-    if (field === 'month') return Math.max((this.birthMonth ?? 1) - 1, 0);
-    if (field === 'day') return Math.max((this.birthDay ?? 1) - 1, 0);
-    const yearIndex = this.birthYear
-      ? this.birthYears.indexOf(this.birthYear)
-      : 0;
-    return Math.max(yearIndex, 0);
+  goToPreviousStep(): void {
+    this.currentStep = Math.max(this.currentStep - 1, 1);
   }
 
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  private sessionService = inject(SessionService);
+  private router = inject(Router);
   message = '';
 
   form = this.fb.nonNullable.group({
     firstname: ['', Validators.required],
     lastname: ['', Validators.required],
-    username: ['', Validators.required],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    username: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(20),
+        Validators.pattern('[A-Za-z_-]+'),
+      ],
+    ],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern('(?=.*[A-Za-z])(?=.*[0-9]).{8,}'),
+      ],
+    ],
     date_of_birth: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone_number: ['', Validators.maxLength(15)],
@@ -243,31 +251,25 @@ export class RegisterComponent {
   submitForm(): void {
     this.form.controls.date_of_birth.setValue(this.dateOfBirth);
     this.birthDateError = !this.dateOfBirth;
+    this.acceptRules.markAsTouched();
     if (this.birthDateError) {
       if (this.activeDropdown === 'country') {
         this.countryQuery = '';
       }
-      this.activeDropdown = !this.birthMonth
-        ? 'month'
-        : !this.birthDay
-          ? 'day'
-          : 'year';
-      this.activeBirthOptionIndex = 0;
     }
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.acceptRules.invalid) return;
 
     this.userService.addUser(this.form.getRawValue()).subscribe({
       next: (user) => {
-        console.log('User registered:', user);
+        try {
+          this.sessionService.start(user);
+        } catch {
+          this.message = 'Registration succeeded, but your session could not be saved. Please log in.';
+          return;
+        }
         this.message = 'Registration successful!';
-        this.form.reset();
-        this.selectedCountry = '';
-        this.countryQuery = '';
-        this.birthMonth = null;
-        this.birthDay = null;
-        this.birthYear = null;
-        this.birthDateError = false;
+        void this.router.navigateByUrl('/users');
       },
       error: (error) => {
         console.error('Error registering user:', error);
