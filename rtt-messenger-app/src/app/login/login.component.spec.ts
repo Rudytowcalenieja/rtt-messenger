@@ -4,21 +4,26 @@ import { of, throwError } from 'rxjs';
 
 import { LoginComponent } from './login.component';
 import { UserService } from '../users/user.service';
+import { SessionService } from '../users/session.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let userService: jasmine.SpyObj<UserService>;
+  let sessionService: SessionService;
   let router: Router;
 
   beforeEach(async () => {
+    sessionStorage.removeItem('rtt-messenger.session');
     userService = jasmine.createSpyObj<UserService>('UserService', [
       'getUserByLogin',
     ]);
     userService.getUserByLogin.and.returnValue(of({
+      id: 12,
       firstname: 'Test',
       lastname: 'User',
       email: 'test@example.com',
+      access_token: 'test-token',
     }));
 
     await TestBed.configureTestingModule({
@@ -29,6 +34,7 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    sessionService = TestBed.inject(SessionService);
     fixture.detectChanges();
   });
 
@@ -57,6 +63,8 @@ describe('LoginComponent', () => {
       'secret',
     );
     expect(navigateSpy).toHaveBeenCalledWith('/users');
+    expect(sessionService.currentUser()?.email).toBe('test@example.com');
+    expect(sessionService.currentUser()?.access_token).toBe('test-token');
   });
 
   it('shows an error when login fails and allows retrying', () => {

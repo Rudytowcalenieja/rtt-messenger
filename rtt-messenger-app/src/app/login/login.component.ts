@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../users/user.service';
+import { SessionService } from '../users/session.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,7 @@ import { UserService } from '../users/user.service';
 export class LoginComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly userService = inject(UserService);
+  private readonly sessionService = inject(SessionService);
   private readonly router = inject(Router);
 
   readonly form = this.formBuilder.nonNullable.group({
@@ -33,7 +35,14 @@ export class LoginComponent {
     this.userService
       .getUserByLogin(usernameOrEmail.trim(), password)
       .subscribe({
-        next: () => {
+        next: (user) => {
+          try {
+            this.sessionService.start(user);
+          } catch {
+            this.isSubmitting = false;
+            this.errorMessage = 'Login succeeded, but your session could not be saved.';
+            return;
+          }
           void this.router.navigateByUrl('/users');
         },
         error: () => {

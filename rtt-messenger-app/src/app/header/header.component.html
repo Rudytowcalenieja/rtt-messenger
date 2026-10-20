@@ -1,10 +1,46 @@
 <header class="header">
-  <h1 class="header__title">RTT Messenger</h1>
+  <div class="header__brand">
+    @if (session.currentUser(); as user) {
+      @if (session.profileAvatarUrl(); as avatarUrl) {
+        <img
+          class="header__avatar"
+          [src]="avatarUrl"
+          [alt]="user.firstname + ' profile photo'"
+        />
+      }
+    }
+    <h1 class="header__title">RTT Messenger</h1>
+  </div>
 
   <nav class="header__nav">
-    <a href="#" class="header__link">Home</a>
-    <a href="#" class="header__link">Contacts</a>
-    <a href="#" class="header__link">Profile</a>
-    <a href="#" class="header__link">Settings</a>
+    <a routerLink="/home" class="header__link">Home</a>
+    @if (session.currentUser()) {
+      <a routerLink="/contacts" class="header__link">Contacts</a>
+      <a
+        routerLink="/profile"
+        routerLinkActive="header__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="header__link"
+        >Profile
+      </a>
+      <a routerLink="/settings" class="header__link">Settings</a>
+    }
   </nav>
+
+  @if (session.currentUser()) {
+    <button class="header__auth" type="button" (click)="logout()">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M10 17l5-5-5-5M15 12H3" />
+        <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" />
+      </svg>
+      <span>Log out</span>
+    </button>
+  } @else {
+    <a
+      routerLink="/login"
+      routerLinkActive="header__link--active"
+      class="header__auth"
+      >Log in</a
+    >
+  }
 </header>

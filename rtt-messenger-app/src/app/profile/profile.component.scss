@@ -1,0 +1,523 @@
+$green: #6fa800;
+$green-dark: #426e08;
+$green-light: #eff8df;
+$ink: #1f2b19;
+$muted: #76816f;
+$border: #e4e9df;
+
+.profile-page {
+  width: min(100% - 2.5rem, 68rem);
+  margin: 3rem auto;
+  color: $ink;
+}
+
+.profile-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+
+  h1 {
+    margin: 0.25rem 0 0.35rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+  }
+
+  &__description {
+    margin: 0;
+    color: $muted;
+    font-size: 0.95rem;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid $border;
+    border-radius: 99px;
+    background: #fff;
+    color: #56614e;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: $green;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #77b52d;
+  box-shadow: 0 0 0 3px $green-light;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.profile-card {
+  min-width: 0;
+  padding: 1.6rem;
+  border: 1px solid $border;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 10px 30px rgb(37 58 18 / 5%);
+
+}
+
+.profile-card--account {
+  padding: 0;
+}
+
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.6rem;
+  border-bottom: 1px solid $border;
+
+  &__details {
+    min-width: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+  }
+
+  h2 {
+    max-width: 100%;
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-size: 1.15rem;
+  }
+}
+
+.profile-card--account > .section-heading,
+.profile-card--account > form {
+  margin-right: 1.6rem;
+  margin-left: 1.6rem;
+}
+
+.profile-card--account > .section-heading {
+  margin-top: 1.6rem;
+}
+
+.profile-card--account > form {
+  margin-bottom: 1.6rem;
+}
+
+.avatar {
+  display: grid;
+  width: 6rem;
+  height: 6rem;
+  place-items: center;
+  overflow: hidden;
+  border: 4px solid #f4f7ef;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #dff0bd, #acd77c);
+  color: $green-dark;
+  font-size: 1.7rem;
+  font-weight: 750;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.identity-handle,
+.photo-hint {
+  margin: 0;
+  color: $muted;
+  font-size: 0.82rem;
+}
+
+.photo-picker {
+  cursor: pointer;
+}
+
+.text-button {
+  margin-top: 0.7rem;
+  padding: 0.25rem;
+  border: 0;
+  background: none;
+  color: #9a4b43;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.photo-hint {
+  margin-top: 0.65rem;
+  font-size: 0.75rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0.3rem 0 0;
+    color: $muted;
+    font-size: 0.84rem;
+  }
+}
+
+.section-icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: $green-light;
+  color: $green-dark;
+
+  &--security {
+    background: #f1f3ed;
+    color: #59634f;
+  }
+
+  svg {
+    width: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 1rem;
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+
+  label {
+    font-size: 0.83rem;
+    font-weight: 650;
+  }
+
+  input,
+  select {
+    width: 100%;
+    min-width: 0;
+    height: 2.8rem;
+    padding: 0 0.8rem;
+    border: 1px solid #dce2d7;
+    border-radius: 0.55rem;
+    outline: none;
+    background: #fff;
+    color: $ink;
+    font: inherit;
+    font-size: 0.87rem;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+
+    &::placeholder {
+      color: #a1a99a;
+    }
+
+    &:focus {
+      border-color: $green;
+      box-shadow: 0 0 0 3px rgb(111 168 0 / 14%);
+    }
+
+    &[aria-invalid="true"] {
+      border-color: #c34d43;
+    }
+  }
+
+  select {
+    appearance: none;
+    padding-right: 2.4rem;
+    color: #64705d;
+  }
+}
+
+.optional {
+  margin-left: 0.25rem;
+  color: $muted;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.field-hint,
+.field-error {
+  font-size: 0.72rem;
+}
+
+.field-hint {
+  color: $muted;
+}
+
+.field-error {
+  color: #b33c34;
+}
+
+.input-wrap,
+.select-wrap {
+  position: relative;
+}
+
+.input-wrap input {
+  padding-left: 2rem;
+}
+
+.input-prefix {
+  position: absolute;
+  top: 50%;
+  left: 0.8rem;
+  color: $muted;
+  font-size: 0.88rem;
+  transform: translateY(-50%);
+}
+
+.select-wrap > svg {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  width: 1rem;
+  fill: none;
+  pointer-events: none;
+  stroke: $muted;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transform: translateY(-50%);
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid #edf0ea;
+}
+
+.save-message {
+  margin: 0;
+  color: $green-dark;
+  font-size: 0.82rem;
+
+  &--error {
+    color: #b33c34;
+  }
+}
+
+.button {
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 650;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+
+  svg {
+    width: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgb(111 168 0 / 28%);
+    outline-offset: 2px;
+  }
+
+  &--primary {
+    background: $green;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      background: $green-dark;
+    }
+  }
+
+  &--secondary {
+    border-color: #dfe6d9;
+    background: #fff;
+    color: $green-dark;
+    cursor: pointer;
+
+    &:hover {
+      background: #f7faf2;
+    }
+  }
+
+  &--disabled {
+    width: 100%;
+    background: #f1f3ef;
+    color: #8a9382;
+    cursor: not-allowed;
+  }
+}
+
+.security-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #e7eadf;
+  border-radius: 0.65rem;
+  background: #fafbf8;
+
+  p {
+    margin: 0;
+    color: #626d58;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+}
+
+.notice-icon {
+  display: grid;
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #a7b396;
+  border-radius: 50%;
+  color: #68765a;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.local-storage-note {
+  margin: 1rem 0 0;
+  color: $muted;
+  font-size: 0.76rem;
+  text-align: right;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 45rem) {
+  .profile-page {
+    width: min(100% - 1.5rem, 38rem);
+    margin: 1.5rem auto;
+  }
+
+  .profile-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 32rem) {
+  .profile-card {
+    padding: 1.15rem;
+  }
+
+  .profile-card--account {
+    padding: 0;
+  }
+
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-identity {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-card--account > .section-heading,
+  .profile-card--account > form {
+    margin-right: 1.15rem;
+    margin-left: 1.15rem;
+  }
+
+  .profile-card--account > .section-heading {
+    margin-top: 1.15rem;
+  }
+
+  .profile-card--account > form {
+    margin-bottom: 1.15rem;
+  }
+
+  .form-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .form-footer .button {
+    width: 100%;
+  }
+
+  .save-message:empty {
+    display: none;
+  }
+
+  .local-storage-note {
+    text-align: left;
+  }
+}

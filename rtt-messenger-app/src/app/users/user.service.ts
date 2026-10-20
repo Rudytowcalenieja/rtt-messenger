@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface User {
@@ -11,6 +11,9 @@ export interface User {
   phone_number?: string | null;
   country?: string;
   date_of_birth?: string;
+  icon_address?: string;
+  access_token?: string;
+  is_admin?: boolean;
 }
 
 export interface NewUser {
@@ -40,5 +43,23 @@ export class UserService {
 
   addUser(user: NewUser): Observable<User> {
     return this.http.post<User>(this.apiUrl, user);
+  }
+
+  updateProfileIcon(
+    userId: number,
+    image: string | null,
+    accessToken: string,
+  ): Observable<{ icon_address: string | null }> {
+    return this.http.put<{ icon_address: string | null }>(
+      `${this.apiUrl}/${userId}/icon`,
+      { image },
+      { headers: new HttpHeaders({ Authorization: `Bearer ${accessToken}` }) },
+    );
+  }
+
+  endSession(accessToken: string): Observable<void> {
+    return this.http.delete<void>('http://localhost:3000/api/session', {
+      headers: new HttpHeaders({ Authorization: `Bearer ${accessToken}` }),
+    });
   }
 }

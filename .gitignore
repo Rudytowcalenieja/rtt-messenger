@@ -1,7 +1,5 @@
-# Local environment files
-**/.env
-**/.env.*
-!**/.env.example
+# API environment file
+/api/.env
 
-# Installed dependencies
-**/node_modules/
+# API dependencies
+/api/node_modules/
