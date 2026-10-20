@@ -1,0 +1,239 @@
+<main class="profile-page">
+  <section class="profile-heading" aria-labelledby="profile-title">
+    <div>
+      <p class="eyebrow">YOUR ACCOUNT</p>
+      <h1 id="profile-title">Profile settings</h1>
+      <p class="profile-heading__description">
+        Manage the details people see when they connect with you.
+      </p>
+    </div>
+    <span class="profile-heading__badge">
+      <span class="status-dot" aria-hidden="true"></span>
+      Personal profile
+    </span>
+  </section>
+
+  <div class="profile-layout">
+    <section
+      class="profile-card profile-card--account"
+      aria-labelledby="details-title"
+    >
+      <div class="profile-identity" aria-label="Profile photo">
+        <div class="avatar" [class.avatar--photo]="avatarUrl">
+          @if (avatarUrl) {
+            <img [src]="avatarUrl" alt="Your profile photo" />
+          } @else {
+            <span>{{ initials }}</span>
+          }
+        </div>
+        <div class="profile-identity__details">
+          <h2>{{ profileName }}</h2>
+          <p class="identity-handle">
+            {{
+              form.controls.username.value
+                ? "@" + form.controls.username.value
+                : "Add a username"
+            }}
+          </p>
+
+          <div class="profile-identity__actions">
+            <label
+              class="button button--secondary photo-picker"
+              for="profile-photo"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 7.5h3l1.4-2h7.2l1.4 2h3A1.5 1.5 0 0 1 21.5 9v9a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 18V9A1.5 1.5 0 0 1 4 7.5Z"
+                />
+                <circle cx="12" cy="13" r="3.5" />
+              </svg>
+              {{ avatarUrl ? "Change photo" : "Upload photo" }}
+            </label>
+            <input
+              id="profile-photo"
+              class="visually-hidden"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              (change)="selectPhoto($event)"
+            />
+            @if (avatarUrl) {
+              <button class="text-button" type="button" (click)="removePhoto()">
+                Remove photo
+              </button>
+            }
+          </div>
+          <p class="photo-hint">JPG, PNG or WebP. Max 2 MB.</p>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <div>
+          <h2 id="details-title">Personal information</h2>
+          <p>Keep your contact details up to date.</p>
+        </div>
+        <span class="section-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="3.5" />
+            <path d="M5 20v-1.5a7 7 0 0 1 14 0V20Z" />
+          </svg>
+        </span>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="saveProfile()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="username">Username</label>
+            <div class="input-wrap">
+              <span class="input-prefix" aria-hidden="true">&#64;</span>
+              <input
+                id="username"
+                formControlName="username"
+                type="text"
+                autocomplete="username"
+                placeholder="Choose a username"
+                maxlength="20"
+                [attr.aria-invalid]="
+                  form.controls.username.invalid &&
+                  form.controls.username.touched
+                "
+                aria-describedby="username-hint"
+              />
+            </div>
+            <span id="username-hint" class="field-hint"
+              >3–20 letters, hyphens or underscores.</span
+            >
+            @if (
+              form.controls.username.touched && form.controls.username.invalid
+            ) {
+              <span class="field-error"
+                >Enter a username using 3–20 letters, hyphens or
+                underscores.</span
+              >
+            }
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input
+              id="email"
+              formControlName="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              [attr.aria-invalid]="
+                form.controls.email.invalid && form.controls.email.touched
+              "
+            />
+            @if (form.controls.email.touched && form.controls.email.invalid) {
+              <span class="field-error">Enter a valid email address.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="phone"
+              >Phone number <span class="optional">Optional</span></label
+            >
+            <input
+              id="phone"
+              formControlName="phone_number"
+              type="tel"
+              autocomplete="tel"
+              placeholder="+1 555 000 0000"
+              maxlength="15"
+              [attr.aria-invalid]="
+                form.controls.phone_number.invalid &&
+                form.controls.phone_number.touched
+              "
+            />
+            @if (
+              form.controls.phone_number.touched &&
+              form.controls.phone_number.invalid
+            ) {
+              <span class="field-error"
+                >Phone numbers must be 15 characters or fewer.</span
+              >
+            }
+          </div>
+
+          <div class="field">
+            <label for="country">Country or region</label>
+            <div class="select-wrap">
+              <select
+                id="country"
+                formControlName="country"
+                autocomplete="country-name"
+                [attr.aria-invalid]="
+                  form.controls.country.invalid && form.controls.country.touched
+                "
+              >
+                <option value="" disabled>Select your country</option>
+                @for (country of countries; track country) {
+                  <option [value]="country">{{ country }}</option>
+                }
+              </select>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 10 5 5 5-5" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <p
+            class="save-message"
+            aria-live="polite"
+            [class.save-message--error]="saveError"
+          >
+            @if (saveMessage) {
+              {{ saveMessage }}
+            }
+          </p>
+          <button
+            class="button button--primary"
+            type="submit"
+            [disabled]="isSavingAvatar"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 4.5h12l2.5 2.5v12.5H4.5V4.5Z" />
+              <path d="M8 4.5v5h8v-5M8 19.5v-6h8v6" />
+            </svg>
+            {{ isSavingAvatar ? "Saving…" : "Save changes" }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section
+      class="profile-card profile-card--security"
+      aria-labelledby="security-title"
+    >
+      <div class="section-heading">
+        <div>
+          <h2 id="security-title">Password &amp; security</h2>
+          <p>Keep your account secure with a strong password.</p>
+        </div>
+        <span class="section-icon section-icon--security" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect x="5" y="10" width="14" height="10" rx="2" />
+            <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v2" />
+          </svg>
+        </span>
+      </div>
+      <div class="security-notice" role="status">
+        <span class="notice-icon" aria-hidden="true">i</span>
+        <p>
+          Password changes aren't connected yet. Your password can't be reset
+          from this page until account security is available.
+        </p>
+      </div>
+      <button class="button button--disabled" type="button" disabled>
+        Reset password
+      </button>
+    </section>
+  </div>
+
+  <p class="local-storage-note">
+    Profile details are saved in this browser. Profile photos are saved to your
+    account.
+  </p>
+</main>

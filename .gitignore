@@ -1,0 +1,5 @@
+# API environment file
+/api/.env
+
+# API dependencies
+/api/node_modules/

@@ -1,0 +1,281 @@
+<main>
+  <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <fieldset class="registration-form">
+      <legend>Create an account</legend>
+
+      <ol class="step-indicator" aria-label="Registration progress">
+        <li [class.active]="currentStep === 1" [attr.aria-current]="currentStep === 1 ? 'step' : null">
+          <span>1</span> Personal details
+        </li>
+        <li [class.active]="currentStep === 2" [attr.aria-current]="currentStep === 2 ? 'step' : null">
+          <span>2</span> Contact details
+        </li>
+        <li [class.active]="currentStep === 3" [attr.aria-current]="currentStep === 3 ? 'step' : null">
+          <span>3</span> Preferences
+        </li>
+      </ol>
+
+      @if (currentStep === 1) {
+      <section class="form-section" aria-labelledby="personal-details-heading">
+        <h2 id="personal-details-heading">Personal details</h2>
+        <div class="section-fields">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input
+              id="firstName"
+              name="firstname"
+              formControlName="firstname"
+              type="text"
+              placeholder="Enter your first name"
+              autocomplete="given-name"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input
+              id="lastName"
+              name="lastname"
+              formControlName="lastname"
+              type="text"
+              placeholder="Enter your last name"
+              autocomplete="family-name"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="username">Username</label>
+            <input
+              id="username"
+              name="username"
+              formControlName="username"
+              type="text"
+              placeholder="Choose a username"
+              autocomplete="username"
+              minlength="3"
+              maxlength="20"
+              pattern="[A-Za-z_-]+"
+              title="Use at least 3 and at most 20 letters, hyphens, or underscores only."
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              formControlName="password"
+              type="password"
+              placeholder="At least 8 characters"
+              autocomplete="new-password"
+              minlength="8"
+              pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,}"
+              title="Use at least 8 characters, including a letter and a number."
+              required
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="next-button" type="button" (click)="goToNextStep()">
+            Next
+          </button>
+        </div>
+      </section>
+      }
+
+      @if (currentStep === 2) {
+      <section class="form-section" aria-labelledby="contact-details-heading">
+        <h2 id="contact-details-heading">Contact details</h2>
+        <div class="section-fields">
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              formControlName="email"
+              type="email"
+              placeholder="name@example.com"
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="field">
+            <label for="phoneNumber">Phone number</label>
+            <input
+              id="phoneNumber"
+              name="phone_number"
+              formControlName="phone_number"
+              type="tel"
+              placeholder="Enter your phone number"
+              autocomplete="tel"
+            />
+          </div>
+
+          <div class="field">
+            <label for="country">Country</label>
+            <div class="country-picker">
+              <input
+                id="country"
+                type="text"
+                autocomplete="off"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+                aria-controls="country-list"
+                placeholder="Search or select a country"
+                [value]="countryQuery || selectedCountry"
+                [attr.aria-expanded]="activeDropdown === 'country'"
+                [attr.aria-activedescendant]="
+                  activeDropdown === 'country' && filteredCountries.length
+                    ? 'country-option-' + activeCountryIndex
+                    : null
+                "
+                (focus)="openCountryList()"
+                (input)="searchCountries($event)"
+                (keydown)="handleCountryKeydown($event)"
+              />
+              <input type="hidden" name="country" formControlName="country" />
+              @if (activeDropdown === "country") {
+                <ul id="country-list" class="country-options" role="listbox">
+                  @for (
+                    country of filteredCountries;
+                    track country;
+                    let index = $index
+                  ) {
+                    <li
+                      [id]="'country-option-' + index"
+                      role="option"
+                      [attr.aria-selected]="selectedCountry === country"
+                      [class.active]="index === activeCountryIndex"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="selectCountry(country)"
+                    >
+                      {{ country }}
+                    </li>
+                  } @empty {
+                    <li class="no-results" role="presentation">
+                      No countries found
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label id="dateOfBirthLabel">Date of birth</label>
+            <div
+              class="birth-date"
+              role="group"
+              aria-labelledby="dateOfBirthLabel"
+              [attr.aria-describedby]="birthDateError ? 'dateOfBirthError' : null"
+            >
+              <select
+                class="birth-date__select"
+                aria-label="Birth month"
+                required
+                [value]="birthMonth ?? ''"
+                [attr.aria-invalid]="birthDateError && !birthMonth"
+                (change)="setBirthMonth($event)"
+              >
+                <option value="" disabled>Month</option>
+                @for (month of birthMonths; track month; let index = $index) {
+                  <option [value]="index + 1">{{ month }}</option>
+                }
+              </select>
+              <select
+                class="birth-date__select"
+                aria-label="Birth day"
+                required
+                [value]="birthDay ?? ''"
+                [attr.aria-invalid]="birthDateError && !birthDay"
+                (change)="setBirthDay($event)"
+              >
+                <option value="" disabled>Day</option>
+                @for (day of availableBirthDays; track day) {
+                  <option [value]="day">{{ day }}</option>
+                }
+              </select>
+              <select
+                class="birth-date__select"
+                aria-label="Birth year"
+                required
+                [value]="birthYear ?? ''"
+                [attr.aria-invalid]="birthDateError && !birthYear"
+                (change)="setBirthYear($event)"
+              >
+                <option value="" disabled>Year</option>
+                @for (year of birthYears; track year) {
+                  <option [value]="year">{{ year }}</option>
+                }
+              </select>
+              <input
+                type="hidden"
+                id="dateOfBirth"
+                name="date_of_birth"
+                formControlName="date_of_birth"
+              />
+            </div>
+            @if (birthDateError) {
+              <p id="dateOfBirthError" class="date-error" role="alert">
+                Select your month, day, and year of birth.
+              </p>
+            }
+          </div>
+        </div>
+        <div class="form-actions form-actions--navigation">
+          <button class="login-button" type="button" (click)="goToPreviousStep()">
+            Back
+          </button>
+          <button class="next-button" type="button" (click)="goToNextStep()">
+            Next
+          </button>
+        </div>
+      </section>
+      }
+
+      @if (currentStep === 3) {
+      <section class="form-section" aria-labelledby="preferences-heading">
+        <h2 id="preferences-heading">Preferences</h2>
+        <label class="consent-option" for="acceptRules">
+          <input
+            id="acceptRules"
+            name="acceptRules"
+            type="checkbox"
+            [formControl]="acceptRules"
+            [attr.aria-invalid]="acceptRulesError"
+            [attr.aria-describedby]="acceptRulesError ? 'acceptRulesError' : null"
+          />
+          I accept the rules
+        </label>
+        @if (acceptRulesError) {
+          <p id="acceptRulesError" class="date-error" role="alert">
+            You must accept the rules to register.
+          </p>
+        }
+
+        <label class="remember-option" for="remember">
+          <input id="remember" name="remember" type="checkbox" />
+          Remember me
+        </label>
+
+        <div class="form-actions">
+          <button class="login-button" type="button" (click)="goToPreviousStep()">
+            Back
+          </button>
+          <button type="submit">Register</button>
+          <button class="login-button" type="button" routerLink="/login">
+            Already have an account? Log in
+          </button>
+        </div>
+      </section>
+      }
+    </fieldset>
+  </form>
+  @if (message) {
+    <p class="message" role="alert">{{ message }}</p>
+  }
+</main>

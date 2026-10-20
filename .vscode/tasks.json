@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Angular",
+      "type": "shell",
+      "command": "ng.cmd serve",
+      "options": { "cwd": "${workspaceFolder}/rtt-messenger-app" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": { "panel": "dedicated", "group": "servers" }
+    },
+    {
+      "label": "API: DB",
+      "type": "shell",
+      "command": "node server.js",
+      "options": { "cwd": "${workspaceFolder}/api" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": { "panel": "dedicated", "group": "servers" }
+    },
+    {
+      "label": "PGSQL",
+      "type": "shell",
+      "command": "if ((Get-Service postgresql-x64-18).Status -ne 'Running') { Start-Service postgresql-x64-18 } else { Write-Host 'PostgreSQL already running' }",
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": { "panel": "dedicated", "group": "servers" }
+    }
+  ]
+}

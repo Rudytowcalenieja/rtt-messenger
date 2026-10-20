@@ -1,0 +1,129 @@
+$login-accent: #84cc16;
+$login-border: #c7d2d0;
+
+form {
+  width: min(100% - 3rem, 36rem);
+  margin: 4rem auto;
+}
+
+fieldset {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 2rem 2.25rem;
+  border: 1px solid $login-border;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 8%);
+}
+
+legend {
+  padding: 0 0.5rem;
+  color: $login-accent;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+label {
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid $login-border;
+  border-radius: 0.4rem;
+  color: inherit;
+  font: inherit;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+
+  &:focus {
+    border-color: $login-accent;
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(132 204 22 / 18%);
+  }
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0;
+  font-weight: 400;
+
+  input {
+    width: auto;
+    accent-color: $login-accent;
+  }
+}
+
+br {
+  display: none;
+}
+
+button {
+  min-height: 3.25rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.1rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: $login-accent;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+
+  &:hover {
+    background: darken($login-accent, 8%);
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgb(132 204 22 / 30%);
+    outline-offset: 2px;
+  }
+}
+
+.register-button {
+  margin-top: 0;
+  background: transparent;
+  color: $login-accent;
+
+  &:hover {
+    background: rgb(132 204 22 / 10%);
+  }
+}
+
+.error-message {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 40rem) {
+  form {
+    width: min(100% - 1.5rem, 36rem);
+    margin: 2rem auto;
+  }
+
+  fieldset {
+    padding: 1.5rem;
+  }
+}

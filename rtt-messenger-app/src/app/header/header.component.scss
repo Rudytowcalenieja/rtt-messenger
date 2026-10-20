@@ -1,0 +1,120 @@
+$lime: #a4de02;
+$lime-dark: #6fa800;
+$text: #1e2a05;
+$white: #ffffff;
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, $lime, $lime-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border: 2px solid $white;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $text;
+    letter-spacing: 0.5px;
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &__link {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: $text;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      color 0.2s;
+
+    &:hover {
+      background: $white;
+      color: $lime-dark;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &--active {
+      background: $white;
+      color: $lime-dark;
+    }
+  }
+
+  &__auth {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: end;
+    padding: 8px 14px;
+    border: 1px solid rgb(30 42 5 / 24%);
+    border-radius: 6px;
+    background: $text;
+    color: $white;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+
+    &:hover {
+      background: #34440d;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $white;
+      outline-offset: 2px;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .header {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .header__nav {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+}
