@@ -61,7 +61,7 @@ export class SessionService {
   private resolveIconAddress(iconAddress: string): string {
     return iconAddress.startsWith('http')
       ? iconAddress
-      : `http://localhost:3000${iconAddress.startsWith('/') ? '' : '/'}${iconAddress}`;
+      : `${iconAddress.startsWith('/') ? '' : '/'}${iconAddress}`;
   }
 
   private isUser(value: unknown): value is User {

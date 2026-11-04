@@ -1,5 +1,8 @@
 # API environment file
 /api/.env
 
+# Local Compose environment
+/.env
+
 # API dependencies
 /api/node_modules/

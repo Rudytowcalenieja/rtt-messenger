@@ -8,7 +8,9 @@ const fs = require("fs/promises");
 const path = require("path");
 
 const app = express();
-app.use(cors({ origin: "http://localhost:4200" }));
+app.use(
+  cors({ origin: process.env.CORS_ORIGIN || "http://localhost:4200" }),
+);
 app.use(express.json({ limit: "3mb" }));
 
 const iconsDirectory = path.join(__dirname, "icons");

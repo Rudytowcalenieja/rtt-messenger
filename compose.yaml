@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-rtt_messenger}
+      POSTGRES_USER: ${POSTGRES_USER:-rtt_messenger}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./api/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./api
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-rtt_messenger}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
+      DB_NAME: ${POSTGRES_DB:-rtt_messenger}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4200}
+    volumes:
+      - api_icons:/app/icons
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./rtt-messenger-app
+    ports:
+      - "${WEB_PORT:-4200}:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  api_icons:

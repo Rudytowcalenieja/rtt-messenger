@@ -30,7 +30,7 @@ export interface NewUser {
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/users';
+  private apiUrl = '/api/users';
 
   getUserByLogin(username: string, password: string): Observable<User> {
     const url = `${this.apiUrl}/login`;
@@ -58,7 +58,7 @@ export class UserService {
   }
 
   endSession(accessToken: string): Observable<void> {
-    return this.http.delete<void>('http://localhost:3000/api/session', {
+    return this.http.delete<void>('/api/session', {
       headers: new HttpHeaders({ Authorization: `Bearer ${accessToken}` }),
     });
   }

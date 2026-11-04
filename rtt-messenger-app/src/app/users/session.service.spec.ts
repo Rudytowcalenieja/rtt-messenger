@@ -69,7 +69,7 @@ describe('SessionService', () => {
     const session = TestBed.inject(SessionService);
 
     expect(session.profileAvatarUrl()).toBe(
-      'http://localhost:3000/icons/avatar.png',
+      '/icons/avatar.png',
     );
   });
 });

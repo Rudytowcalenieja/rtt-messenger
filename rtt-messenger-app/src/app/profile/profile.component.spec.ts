@@ -135,7 +135,7 @@ describe('ProfileComponent', () => {
     );
     expect(session.currentUser()?.icon_address).toBe('/icons/test-avatar.png');
     expect(session.profileAvatarUrl()).toBe(
-      'http://localhost:3000/icons/test-avatar.png',
+      '/icons/test-avatar.png',
     );
     expect(component.saveMessage).toBe('Profile photo saved to your account.');
   });
